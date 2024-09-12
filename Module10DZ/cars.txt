@@ -1,0 +1,3 @@
+Subaru,Outback,2012,2.5,gray,2000000
+Alfa Romeo,Giulia,2017,2.0,3000000,red
+Ferrari,Testarossa,2015,4,red,40000000
