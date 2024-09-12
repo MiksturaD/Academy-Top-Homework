@@ -91,87 +91,170 @@
 # полям через методы класса.
 
 
-class Book:
+# class Book:
+#
+#
+# 	def __init__(self):
+# 		with open('book.txt', 'r', encoding='utf-8') as f:
+# 			# lines = f.readlines()
+# 			self.name: str = input('Введите название книги: ')
+# 			self.year = input('Введите год выпуска книги: ')
+# 			self.publisher = input('Введите издателя: ')
+# 			self.author = input('Введите автора: ')
+# 			self.genre = input('Введите жанр: ')
+# 			self.price = input('Введите стоимость книги: ')
+#
+# 	def save_book_info(self):
+# 		with open('book.txt', 'a', encoding='utf-8') as f:
+# 			f.write(f'{self.name},{self.year},{self.publisher},{self.author},{self.genre},{self.price}\n')
+#
+#
+# 	def show_book_info(self):
+# 		print(f'Название книги - {self.name}')
+# 		print(f'Год выпуска - {self.year}')
+# 		print(f'Издатель - {self.publisher}')
+# 		print(f'Автор - {self.author}')
+# 		print(f'Жанр - {self.genre}')
+# 		print(f'Цена - {self.price} рублей')
+#
+# 	def show_name(self):
+# 		with open('book.txt', 'r', encoding='utf-8') as f:
+# 			lines = f.readlines()
+# 			for line in lines:
+# 				parts = line.split(',')
+# 				print(f'Название книг в базе - {parts[0].strip()}')
+#
+#
+# 	def show_publisher(self):
+# 		with open('book.txt', 'r', encoding='utf-8') as f:
+# 			lines = f.readlines()
+# 			for line in lines:
+# 				parts = line.split(',')
+# 				print(f'Название издателей в базе - {parts[3].strip()}')
+#
+#
+# 	def show_year(self):
+# 		with open('book.txt', 'r', encoding='utf-8') as f:
+# 			lines = f.readlines()
+# 			for line in lines:
+# 				parts = line.split(',')
+# 				print(f'Год выпуска книги в базе - {parts[2].strip()}')
+#
+#
+# 	def show_author(self):
+# 		with open('book.txt', 'r', encoding='utf-8') as f:
+# 			lines = f.readlines()
+# 			for line in lines:
+# 				parts = line.split(',')
+# 				print(f'Автор книги в базе - {parts[4].strip()}')
+#
+#
+# 	def show_genre(self):
+# 		with open('book.txt', 'r', encoding='utf-8') as f:
+# 			lines = f.readlines()
+# 			for line in lines:
+# 				parts = line.split(',')
+# 				print(f'Жанр книги в базе - {parts[5].strip()}')
+#
+#
+# 	def show_price(self):
+# 		with open('book.txt', 'r', encoding='utf-8') as f:
+# 			lines = f.readlines()
+# 			for line in lines:
+# 				parts = line.split(',')
+# 				print(f'Стоимость книги в базе - {parts[6].strip()}')
+#
+# a = Book()
+# a.save_book_info()
+# a.show_book_info()
+# a.show_name()
+# a.show_year()
+# a.show_publisher()
+# a.show_author()
+# a.show_genre()
+# a.show_price()
+
+
+# Задание 3
+# Реализуйте класс «Стадион». Необходимо хранить в
+# полях класса: название стадиона, дату открытия, страну,
+# город, вместимость. Реализуйте методы класса для ввода
+# данных, вывода данных, реализуйте доступ к отдельным
+# полям через методы класса.
+
+
+class Stadium:
 
 
 	def __init__(self):
-		with open('book.txt', 'r', encoding='utf-8') as f:
+		with open('stadium.txt', 'r', encoding='utf-8') as f:
 			# lines = f.readlines()
-			self.name: str = input('Введите название книги: ')
-			self.year = input('Введите год выпуска книги: ')
-			self.publisher = input('Введите издателя: ')
-			self.author = input('Введите автора: ')
-			self.genre = input('Введите жанр: ')
-			self.price = input('Введите стоимость книги: ')
-
-	def save_book_info(self):
-		with open('book.txt', 'a', encoding='utf-8') as f:
-			f.write(f'{self.name},{self.year},{self.publisher},{self.author},{self.genre},{self.price}\n')
+			self.name: str = input('Введите название стадиона: ')
+			self.year = input('Введите дату открытия стадиона: ')
+			self.country = input('Введите страну: ')
+			self.city = input('Введите город: ')
+			self.capacity = input('Введите вместимость стадиона: ')
 
 
-	def show_book_info(self):
-		print(f'Название книги - {self.name}')
-		print(f'Год выпуска - {self.year}')
-		print(f'Издатель - {self.publisher}')
-		print(f'Автор - {self.author}')
-		print(f'Жанр - {self.genre}')
-		print(f'Цена - {self.price} рублей')
+	def save_stadium_info(self):
+		with open('stadium.txt', 'a', encoding='utf-8') as f:
+			f.write(f'{self.name},{self.year},{self.country},{self.city},{self.capacity}\n')
+
+
+	def show_stadium_info(self):
+		print(f'Название стадиона - {self.name}')
+		print(f'Год постройки стадиона - {self.year}')
+		print(f'Страна - {self.country}')
+		print(f'Город - {self.city}')
+		print(f'Вместимость - {self.capacity}')
 
 	def show_name(self):
-		with open('book.txt', 'r', encoding='utf-8') as f:
+		with open('stadium.txt', 'r', encoding='utf-8') as f:
 			lines = f.readlines()
 			for line in lines:
 				parts = line.split(',')
-				print(f'Название книг в базе - {parts[0].strip()}')
+				print(f'Название стадиона в базе - {parts[0].strip()}')
 
 
-	def show_publisher(self):
-		with open('book.txt', 'r', encoding='utf-8') as f:
+	def show_coutry(self):
+		with open('stadium.txt', 'r', encoding='utf-8') as f:
 			lines = f.readlines()
 			for line in lines:
 				parts = line.split(',')
-				print(f'Название издателей в базе - {parts[3].strip()}')
+				print(f'Название страны в базе - {parts[2].strip()}')
 
 
 	def show_year(self):
-		with open('book.txt', 'r', encoding='utf-8') as f:
+		with open('stadium.txt', 'r', encoding='utf-8') as f:
 			lines = f.readlines()
 			for line in lines:
 				parts = line.split(',')
-				print(f'Год выпуска книги в базе - {parts[2].strip()}')
+				print(f'Год постройки стадиона в базе - {parts[1].strip()}')
 
 
-	def show_author(self):
-		with open('book.txt', 'r', encoding='utf-8') as f:
+	def show_city(self):
+		with open('stadium.txt', 'r', encoding='utf-8') as f:
 			lines = f.readlines()
 			for line in lines:
 				parts = line.split(',')
-				print(f'Автор книги в базе - {parts[4].strip()}')
+				print(f'Город где стадион в базе - {parts[3].strip()}')
 
 
-	def show_genre(self):
-		with open('book.txt', 'r', encoding='utf-8') as f:
+	def show_capacity(self):
+		with open('stadium.txt', 'r', encoding='utf-8') as f:
 			lines = f.readlines()
 			for line in lines:
 				parts = line.split(',')
-				print(f'Жанр книги в базе - {parts[5].strip()}')
+				print(f'Вместимость стадиона в базе - {parts[4].strip()}')
 
 
-	def show_price(self):
-		with open('book.txt', 'r', encoding='utf-8') as f:
-			lines = f.readlines()
-			for line in lines:
-				parts = line.split(',')
-				print(f'Стоимость книги в базе - {parts[6].strip()}')
 
-a = Book()
-a.save_book_info()
-a.show_book_info()
+a = Stadium()
+a.save_stadium_info()
 a.show_name()
 a.show_year()
-a.show_publisher()
-a.show_author()
-a.show_genre()
-a.show_price()
+a.show_coutry()
+a.show_city()
+a.show_capacity()
 
 
