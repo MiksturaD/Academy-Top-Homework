@@ -81,9 +81,11 @@ class Trapezoid(Figure):
 		self._side_d: float = side_d
 
 	def __int__(self) -> float:
-		return (((self._side_a + self._side_b) / 2) * ((math.fabs(self._side_c ** 2) -
-		(self._side_a - self._side_b) ** 2) + (self._side_c ** 2 - self._side_d ** 2) / 2 *
-		(self._side_a - self._side_b) ** 2))
+		# Полупериметр
+		s = (self._side_a + self._side_b + self._side_c + self._side_d) / 2
+		# Площадь по формуле Брахмагупты
+		area = math.sqrt((s - self._side_a) * (s - self._side_b) * (s - self._side_c) * (s - self._side_d))
+		return area
 
 	def perimeter(self) -> float:
 		return self._side_a + self._side_b + self._side_c + self._side_d
@@ -100,5 +102,5 @@ b = Square(5)
 print(b)
 c = Triangle(3, 4)
 print(c)
-d = Trapezoid(2,2,4,7)
+d = Trapezoid(2,5,4,7)
 print(d)
