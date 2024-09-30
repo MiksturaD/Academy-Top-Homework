@@ -35,7 +35,7 @@ class Circle(Coordinated, Figure):
 		return 2 * math.pi * self._radius
 
 	def __str__(self):
-		return (f'Эта фигура круг c координатами ({self._x}, {self._y}) с площадью - {self.area()}'
+		return (f'Эта фигура круг c координатами ({self._x}, {self._y}) с площадью - {self.__int__()}'
 						f'b периметром - {self.perimeter()}')
 
 
@@ -50,7 +50,7 @@ class Square(Figure):
 		return self._side * 4
 
 	def __str__(self):
-		return (f'Эта фигура квадрат площадью - {self.area()},'
+		return (f'Эта фигура квадрат площадью - {self.__int__()},'
 						f' и периметром - {self.perimeter()}')
 
 
@@ -69,7 +69,7 @@ class Triangle(Figure):
 		return self._leg_1 + self._leg_2 + self.hypotenuse()
 
 	def __str__(self):
-		return (f'Эта фигура прямоугольный треугольник площадью - {self.area()},'
+		return (f'Эта фигура прямоугольный треугольник площадью - {self.__int__()},'
 						f' и периметром - {self.perimeter()}')
 
 
@@ -81,13 +81,15 @@ class Trapezoid(Figure):
 		self._side_d: float = side_d
 
 	def __int__(self) -> float:
-		return (((self._side_a + self._side_b) / 2) * math.fabs((self._side_c ** 2) - (()))
+		return (((self._side_a + self._side_b) / 2) * ((math.fabs(self._side_c ** 2) -
+		(self._side_a - self._side_b) ** 2) + (self._side_c ** 2 - self._side_d ** 2) / 2 *
+		(self._side_a - self._side_b) ** 2))
 
 	def perimeter(self) -> float:
-		return self._side * 4
+		return self._side_a + self._side_b + self._side_c + self._side_d
 
 	def __str__(self):
-		return (f'Эта фигура квадрат площадью - {self.area()},'
+		return (f'Эта фигура трапеция площадью - {self.__int__()},'
 						f' и периметром - {self.perimeter()}')
 
 
@@ -98,3 +100,5 @@ b = Square(5)
 print(b)
 c = Triangle(3, 4)
 print(c)
+d = Trapezoid(2,2,4,7)
+print(d)
