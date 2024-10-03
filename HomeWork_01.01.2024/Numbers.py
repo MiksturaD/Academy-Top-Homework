@@ -57,7 +57,6 @@ def tax_service(func):
 		tax = net_profit * (tax_rate / 100)
 		return (f'Чистая прибыль компании равна - {net_profit - tax}$'
 						f' Налоги к оплате - {tax}$')
-
 	return wrapper
 
 
@@ -72,11 +71,13 @@ def labor_inspection(func):
 	return wrapper
 
 
-@labor_inspection
-@tax_service
 def company_of_dust(year_turn_over: float, expenses: float, staff: int):
 	return year_turn_over, expenses, staff
 
 
-b = company_of_dust(250000, 120000, 44)
-print(b)
+a = tax_service(company_of_dust)
+b = labor_inspection(company_of_dust)
+
+
+print(a(250000, 125000, 44))
+print(b(250000, 125000, 44))
