@@ -24,19 +24,16 @@ class Employee:
         self.surname = input('Введите фамилию нового сотрудника: ')
         self.age = input('Введите возраст нового сотрудника: ')
 
-
     def print_employee(self):
         print(f'ID сотрудника - {self.id}')
         print(f'Имя сотрудника - {self.name}')
         print(f'Фамилия сотрудника - {self.surname}')
         print(f'Возраст сотрудника - {self.age}')
 
-
     def save_employee(self):
         with open('employees.txt', 'a', encoding='utf-8') as f:
             f.write(f'{self.id},{self.name},{self.surname},{self.age}\n')
             self.id += 1
-
 
     def show_employee(self):
         with open('employees.txt', 'r', encoding='utf-8') as f:
