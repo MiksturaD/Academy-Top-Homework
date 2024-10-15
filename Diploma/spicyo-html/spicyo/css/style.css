@@ -1,19 +1,31 @@
 /*--------------------------------------------------------------------- File Name: style.css ---------------------------------------------------------------------*/
-/*--------------------------------------------------------------------- import Fonts ---------------------------------------------------------------------*/
- @import url('https://fonts.googleapis.com/css?family=Rajdhani:300,400,500,600,700');
- @import url('https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i');
- @import url('https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i');
-/*--------------------------------------------------------------------- import Files ---------------------------------------------------------------------*/
- @import url(font-awesome.min.css);
- @import url(owl.carousel.min.css);
+
 /*--------------------------------------------------------------------- basic ---------------------------------------------------------------------*/
  body {
      color: #666666;
      font-size: 14px;
-     font-family: 'poppins', sans-serif;
+     font-family: "LXGW WenKai Mono TC";
      line-height: 1.80857;
      font-weight: normal;
 }
+.lxgw-wenkai-mono-tc-light {
+     font-family: "LXGW WenKai Mono TC", monospace;
+     font-weight: 300;
+     font-style: normal;
+   }
+   
+.lxgw-wenkai-mono-tc-regular {
+     font-family: "LXGW WenKai Mono TC", monospace;
+     font-weight: 400;
+     font-style: normal;
+}
+   
+.lxgw-wenkai-mono-tc-bold {
+     font-family: "LXGW WenKai Mono TC", monospace;
+     font-weight: 700;
+     font-style: normal;
+}
+   
  a {
      color: #1f1f1f;
      text-decoration: none !important;
@@ -331,6 +343,7 @@
      background: #212020;
      min-height: 100vh;
      padding-top: 93px;
+     margin-top: 115px;
 }
 /** slider section **/
  #main_slider {
@@ -666,14 +679,14 @@
      border-radius: inherit;
      margin-bottom: 25px;
      padding: 15px 20px;
-     font-family: poppins;
+     font-family: "LXGW WenKai Mono TC";
 }
  .form-control:focus {
      box-shadow: inherit;
      border: #fff solid 2px !important;
 }
  .textarea {
-     font-family: poppins;
+     font-family: "LXGW WenKai Mono TC";
      border: #fff solid 2px;
      margin-bottom: 25px;
      padding: 15px 20px;
@@ -681,7 +694,7 @@
      padding-top: 40px;
 }
  .send {
-     font-family: poppins;
+     font-family: "LXGW WenKai Mono TC";
      float: left;
      margin: 0 auto;
      display: block;
