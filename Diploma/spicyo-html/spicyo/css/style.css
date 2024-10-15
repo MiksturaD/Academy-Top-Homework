@@ -273,7 +273,7 @@
 /*--------------------------------------------------------------------- header ---------------------------------------------------------------------*/
  header {
      min-height: 90px;
-     background: #212020;
+     background: #1e1d1b;
      padding: 15px 0;
      position: fixed;
      width: 100%;
@@ -340,10 +340,10 @@
      background: transparent;
 }
  .slider_section {
-     background: #212020;
+     background: #1e1d1b;
      min-height: 100vh;
-     padding-top: 93px;
-     margin-top: 115px;
+     /* padding-top: 93px; */
+     /* margin-top: 115px; */
 }
 /** slider section **/
  #main_slider {
@@ -387,11 +387,11 @@
      padding-right: 30px;
 }
  #main_slider .carousel-control-prev, #main_slider .carousel-control-next {
-     width: 65px;
-     height: 65px;
-     background: #e1e0e0;
+     width: 67px;
+     height: 67px;
+     background: #fcfcfc;
      opacity: 1;
-     font-size: 30px;
+     font-size: 10px;
      color: #212020;
      border-radius: 100%;
 }
@@ -466,7 +466,7 @@
      opacity: 1;
      width: 55px;
      height:55px;
-     background: #fff;
+     background: #fcfcfc;
      top: 35%;
 }
  .carousel-control-next:focus, .carousel-control-next:hover {
@@ -479,7 +479,7 @@
      opacity: 1;
      width: 55px;
      height:55px;
-     background: #fff;
+     background: #fcfcfc;
      top: 35%;
 }
  .owl-prev span {
@@ -655,12 +655,13 @@
 /** end Our Client **/
 /*--------------------------------------------------------------------- footer ---------------------------------------------------------------------*/
  .footer {
-     background: #d8b00f;
+     background: #1e1d1b;
+     /* #d8b00f #1e1d1b */
      padding-top:90px;
-     margin-top: 90px;
+     margin-top: 120px;
 }
  .footer h2 {
-     color: #000;
+     color: #d8b00f;
      font-size: 40px;
      font-weight: 500;
      padding-left: 223px;
@@ -706,7 +707,7 @@
      font-size: 18px;
 }
  .send:hover {
-     background: #000;
+     background: #d8b00f;
      color: #fff;
 }
  .footer .img-box {
@@ -727,14 +728,14 @@
     display: inline-block;
 }
  ul.lik li a {
-     color: #292323;
+     color: #bfb1b1;
      font-size: 17px;
      line-height: 27px;
      padding: 0px 25px;
      font-weight: 500;
 }
  ul.lik li a:hover {
-     color: #fff;
+     color: #d8b00f;
 }
  ul.lik li.active a {
     color: #fff;
@@ -770,7 +771,7 @@
      color: #fff;
 }
  .submit:hover {
-    background: #ddd;
+    background: #d8b00f;
      color: #000;
 }
  .footer .img-box figure {
@@ -823,7 +824,7 @@
      height: 35px;
      line-height: 34px;
      text-align: center;
-     background: #111;
+     background: #ffffff;
      position: absolute;
      top: 10px;
      right: 10px;
@@ -833,7 +834,7 @@
      transition: all 0.3s;
 }
  #dismiss:hover {
-     background: #111;
+     background: #ffffff;
      color: #fff;
 }
  .overlay {
@@ -923,9 +924,9 @@
      font-weight: 500;
 }
  .yellow_bg {
-     background-color: #e3d105;
+     background-color: #1e1d1b;
      padding: 40px 0px;
-     margin-top: 90px;
+     margin-top: 120px;
 }
  .yellow_bg .title {
      padding-bottom: 0px;
