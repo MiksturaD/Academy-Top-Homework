@@ -45,10 +45,10 @@ class ConcreteBuilder1(Builder):
         self._my = None
         self._model = None
         self._brand = None
-        # self.reset()
+        self.reset()
 
-    # def reset(self) -> None:
-    #     self._product = Product1()
+    def reset(self) -> None:
+        self._product = Product1()
 
     @property
     def product(self) -> Product1:
@@ -71,18 +71,18 @@ class ConcreteBuilder1(Builder):
         self.reset()
         return product
 
-    def produce_part_a(self) -> None:
-        self._brand: str = input('Введите бренд автомобиля для создания - ')
-        self._model: str = input('Введите модель автомобиля - ')
-        self._my: int = int(input('Введите год выпуска модели - '))
+    def produce_part_a(self, brand: str, model: str, my: int) -> None:
+        self._brand: str = brand
+        self._model: str = model
+        self._my: int = my
         self._product.add("PartA1")
 
-    def produce_part_b(self) -> None:
-        self._engine: str = input('Введите какой двигатель установить - ')
-        self._power: int = int(input('Какой мощности - '))
+    def produce_part_b(self, engine: str, power: int) -> None:
+        self._engine: str = engine
+        self._power: int = power
         self._product.add("PartB1")
 
-    def produce_part_c(self) -> None:\
+    def produce_part_c(self) -> None:
         self._color: str = input('Какой цвет авто - ? ')
         self._price: int = int(input('Сколько будет стоить ? - '))
         self._product.add("PartC1")
@@ -156,24 +156,24 @@ if __name__ == "__main__":
     строителя.
     """
 
-    director = Director()
+    # director = Director()
     builder = ConcreteBuilder1()
-    director.builder = builder
+    # director.builder = builder
 
     print("Standard basic product: ")
-    director.build_minimal_viable_product()
+    # director.build_minimal_viable_product()
     builder.product.list_parts()
 
-    print("\n")
+    # print("\n")
 
-    print("Standard full featured product: ")
-    director.build_full_featured_product()
-    builder.product.list_parts()
+    # print("Standard full featured product: ")
+    # director.build_full_featured_product()
+    # builder.product.list_parts()
 
-    print("\n")
+    # print("\n")
 
     # Помните, что паттерн Строитель можно использовать без класса Директор.
     print("Custom product: ")
-    builder.produce_part_a()
-    builder.produce_part_b()
+    builder.produce_part_a('VAZ','taz', 1980)
+    builder.produce_part_b('1.5litres', 60)
     builder.product.list_parts()
