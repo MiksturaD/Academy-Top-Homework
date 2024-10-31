@@ -4,7 +4,7 @@ from telebot import types
 from habit import WaterHabit
 
 # Создаем экземпляр бота
-bot = telebot.TeleBot('8190594044:AAElwSVlkg12C-Erw3hwdaPu7fcgDyEC-J4')
+bot = telebot.TeleBot('tg_key')
 
 # Список для хранения привычек
 habits = []
