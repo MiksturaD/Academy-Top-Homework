@@ -1,7 +1,6 @@
-from datetime import datetime
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
-def index(request):
-    now = datetime.()
-    return HttpResponse(f"Текущая дата и время: {now}")
+def coder_day(request):
+    return HttpResponse(f'Каждый год отмечают день программиста 256 день в году')
