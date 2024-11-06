@@ -1,5 +1,6 @@
 from telebot import types
 
+
 # Классы по созданию привычек
 class Habit:
 
@@ -9,4 +10,3 @@ class Habit:
 
 	def save(self, habits: list):
 		habits.append(self)
-

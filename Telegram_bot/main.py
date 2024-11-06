@@ -2,6 +2,8 @@ from datetime import datetime
 
 import telebot
 import random
+
+import json
 from telebot import types
 from habit import Habit
 from list import token
@@ -43,11 +45,48 @@ def handle_text(message):
 		bot.register_next_step_handler(message, create_habit)
 	# Если юзер прислал 2, выдаем список привычек
 	elif message.text.strip() == 'Список привычек':
-		bot.send_message(message.chat.id, 'Здесь будет список привычек')
+		bot.send_message(message.chat.id, view_habits(message))
 	elif message.text.strip() == 'Удаление привычки':
-		bot.send_message(message.chat.id, 'Будем удалять привычку')
+		bot.send_message(message.chat.id, 'Введите название привычки для удаления:')
+		bot.register_next_step_handler(message, delete_habit)
 	elif message.text.strip() == 'Выполнение привычки':
 		bot.send_message(message.chat.id, 'Здесь будем выполнять действие по привычке')
+
+
+def view_habits(message):
+	habits = []
+	with open('habits.txt', 'r', encoding='utf-8') as f:
+		for line in f:
+			habit_data = line.strip().split(',')
+			habit = {
+				'name': habit_data[0],
+				'description': habit_data[1],
+				'target_date': habit_data[2]
+			}
+			habits.append(habit)
+	habits_str = '\n'.join([
+		f'Название: {habit["name"]}\nОписание: {habit["description"]}\nЦелевая дата: {habit["target_date"]}'
+		for habit in habits
+	])
+	return f'Ваши привычки:\n{habits_str}'
+
+
+def delete_habit(message):
+	with open('habits.txt', 'r', encoding='utf-8') as f:
+		for line in f:
+			habit_data = line.strip().split(',')
+			habit = {
+				'name': habit_data[0],
+				'description': habit_data[1],
+				'target_date': habit_data[2]
+			}
+			habits.append(habit)
+
+	with open('habits.txt', 'w', encoding='utf-8') as f:
+		for habit in habits:
+			if message == habit_data[0]:
+				f.write(line)
+	bot.send_message(message.chat.id, 'Привычка успешно удалена!')
 
 
 def create_habit(message):
@@ -62,20 +101,29 @@ def create_habit(message):
 def create_habit_description(message):
 	habit_description = message.text
 	habits[-1]['description'] = habit_description
-	bot.send_message(message.chat.id, 'Теперь введите целевую дату выполнения привычки:')
+	bot.send_message(message.chat.id, 'Теперь введите целевую дату выполнения привычки в формате дд.мм.гггг:')
 	bot.register_next_step_handler(message, create_habit_target_date)
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+	def default(self, obj):
+		if isinstance(obj, datetime):
+			return obj.strftime('%d.%m.%Y')
+		return super().default(obj)
+
 
 def create_habit_target_date(message):
 	try:
-		target_date = datetime.strptime(message.text, '%d.%m.%Y').date()
-		habits[-1]['target_date'] = target_date
+		target_date = datetime.strptime(message.text, '%d.%m.%Y')
+		habit = {'name': habits[-1]['name'], 'description': habits[-1]['description'], 'target_date': target_date}
+		habits[-1] = habit
+		habit_str = f"Название: {habit['name']},Описание: {habit['description']},Целевая дата: {habit['target_date']}"
+		with open('habits.txt', 'a', encoding='utf-8') as f:
+			f.write(habit_str + '\n')  # Записываем каждую привычку на новой строке
 		bot.send_message(message.chat.id, 'Привычка успешно создана!')
 	except ValueError:
 		bot.send_message(message.chat.id, 'Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.')
-		bot.register_next_step_handler(message, create_habit_target_date())
-
-
-
+		bot.register_next_step_handler(message, create_habit_target_date)
 
 
 # Запускаем бота
