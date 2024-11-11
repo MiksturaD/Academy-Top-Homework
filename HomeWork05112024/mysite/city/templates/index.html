@@ -20,10 +20,13 @@
 
 <body>
     <div>
-      <h1>Новости о нашем городе</h1>
+      <h1>Наш город красноярск!</h1>
     </div>
-    <div>
-      <p><a href="{{ home_url }}">На главную</a></p>
-    </div>
+    <ul>
+        <li><a href="{% url 'news' %}">Новости</a></li>
+        <li><a href="{% url 'governance' %}">Правительство</a></li>
+        <li><a href="{% url 'facts' %}">Факты</a></li>
+        <li><a href="{% url 'contact' %}">Контакты</a></li>
+    </ul>
 </body>
 </html>

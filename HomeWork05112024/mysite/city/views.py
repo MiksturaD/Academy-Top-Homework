@@ -3,23 +3,23 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 
 def index(request):
-    return HttpResponse(f"Наш город красноярск!")
+    return render(request, 'index.html')
 
 
 def news(request):
-    return render(request, 'news.html')
+    return render(request, 'news.html', {'home_url': '/city'})
 
 
 def governance(request):
-    return HttpResponse(f"Администрация города")
+    return render(request, 'governance.html',{'home_url': '/city'})
 
 
 def facts(request):
-    return HttpResponse(f"Факты о нашем городе")
+    return render(request, 'facts.html',{'home_url': '/city'})
 
 
 def contact(request):
-    return HttpResponse(f"Контактная страничка Красноярска")
+    return render(request, 'contact.html',{'home_url': '/city'})
 
 def custom_404_view(request, exception):
     return render(request, '404.html', status=404)
