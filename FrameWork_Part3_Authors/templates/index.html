@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Писатели фантасты</title>
+
+    <style>
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrapper > div {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+      <h1>Наши лучшие писатели!</h1>
+    </div>
+    <ul>
+        <li><a href="{% url 'authors' %}">Писатели</a></li>
+        <li><a href="{% url 'top_books' %}">Топ лучших книг</a></li>
+
+    </ul>
+</body>
+</html>
