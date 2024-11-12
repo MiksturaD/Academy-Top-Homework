@@ -5,7 +5,7 @@ def index(request):
     return render(request, 'index.html')
 
 def author(request):
-    return render(request, 'author.html')
+    return render(request, 'authors.html')
 
 def top_book(request):
     return render(request, 'top_book.html')
