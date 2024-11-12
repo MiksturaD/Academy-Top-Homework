@@ -1,11 +1,6 @@
 from datetime import datetime
-
 import telebot
-import random
-
-
 from telebot import types
-from habit import Habit
 from list import token
 
 # Создаем экземпляр бота

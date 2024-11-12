@@ -1,0 +1,1 @@
+key = 'django-insecure-nfilbjb(z%ak#yz471t*&%&vc)m)gstmb^_pywy&3!tm1r=k$x'
