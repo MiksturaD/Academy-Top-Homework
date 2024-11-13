@@ -7,19 +7,19 @@ def index(request):
 
 
 def news(request):
-    return render(request, 'news.html')
+    return render(request, 'news.html', {'home_url': '/city'})
 
 
 def governance(request):
-    return render(request, 'governance.html')
+    return render(request, 'governance.html',{'home_url': '/city'})
 
 
 def facts(request):
-    return render(request, 'facts.html')
+    return render(request, 'facts.html',{'home_url': '/city'})
 
 
 def contact(request):
-    return render(request, 'contact.html')
+    return render(request, 'contact.html',{'home_url': '/city'})
 
 def custom_404_view(request, exception):
     return render(request, '404.html', status=404)

@@ -23,9 +23,14 @@
       <h1>Лучшие писатели 20 и 21 веков!</h1>
     </div>
     <ul>
-        <li><a href="{% url 'authors' %}">Лучшие авторы</a></li>
-        <li><a href="{% url 'top_book' %}">Топ книг</a></li>
-
+        {% for author in authors %}
+            <a href="{% url 'author_detail' author.id %}">{{ author }}</a>
+        {% endfor %}
+    </ul>
+    <ul>
+        <li><a href="{% url 'author' author_id %}">Писатели</a></li>
+        <li><a href="{% url 'detail' top_book_id %}">Подробности</a></li>
+        <li><a href="{% url 'top_book' top_book_id %}">Топ книг</a></li>
     </ul>
 </body>
 </html>
