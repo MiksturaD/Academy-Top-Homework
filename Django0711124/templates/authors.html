@@ -20,13 +20,10 @@
 
 <body>
     <div>
-        <h1>{{ author }}</h1>
-            <p>Books by {{ author }}:</p>
-        <ul>
-            {% for book in author.top_books.all %}
-                <li><a href="{% url 'detail' author.id book.id %}">{{ book.title }}</a></li>
-            {% endfor %}
-        </ul>
+      <h1>Лучшие писатели фантасты</h1>
+    </div>
+    <div>
+      <p><a href="{% url 'main' %}">На главную</a></p>
     </div>
 </body>
 </html>
