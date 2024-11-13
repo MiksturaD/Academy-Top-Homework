@@ -5,6 +5,16 @@
       <excludeFolder url="file://$MODULE_DIR$/HomeWork05112024/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/HomeWork_03.10.2024/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/HomeWork_05112024_Django/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Django0711124/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/Django0711124/.venv/Lib" />
+      <excludeFolder url="file://$MODULE_DIR$/HomeWork_24.10.2024/.venv/Include" />
+      <excludeFolder url="file://$MODULE_DIR$/HomeWork_24.10.2024/.venv/Lib" />
+      <excludeFolder url="file://$MODULE_DIR$/HomeWork_24.10.2024/.venv/Scripts" />
+      <excludeFolder url="file://$MODULE_DIR$/HomeWork_31.10.2024_DjangoStart/.venv/Lib" />
+      <excludeFolder url="file://$MODULE_DIR$/HomeWork_31.10.2024_DjangoStart/.venv/Scripts" />
+      <excludeFolder url="file://$MODULE_DIR$/Telegram_bot/.venv/Include" />
+      <excludeFolder url="file://$MODULE_DIR$/Telegram_bot/.venv/Lib" />
+      <excludeFolder url="file://$MODULE_DIR$/Telegram_bot/.venv/Scripts" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
