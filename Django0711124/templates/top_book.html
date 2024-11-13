@@ -21,9 +21,14 @@
 <body>
     <div>
       <h1>Топ самых читаемых книг</h1>
+            <ul>
+                {% for book in top_books %}
+                    <li><a href="{% url 'detail' book.author.id book.id %}">{{ book.title }}</a></li>
+                {% endfor %}
+            </ul>
     </div>
     <div>
-      <p><a href="{{ home_url }}">На главную</a></p>
+      <p><a href="{% url 'main' %}">На главную</a></p>
     </div>
 </body>
 </html>
