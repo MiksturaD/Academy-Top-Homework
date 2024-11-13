@@ -24,13 +24,9 @@
     </div>
     <ul>
         {% for author in authors %}
-            <a href="{% url 'author_detail' author.id %}">{{ author }}</a>
+            <li><a href="{% url 'detail' author.id top_books.id %}"> 
+                {{ author.id }} Автор {{ author.first_name }} {{ author.last_name }}</a></li>
         {% endfor %}
-    </ul>
-    <ul>
-        <li><a href="{% url 'author' author_id %}">Писатели</a></li>
-        <li><a href="{% url 'detail' top_book_id %}">Подробности</a></li>
-        <li><a href="{% url 'top_book' top_book_id %}">Топ книг</a></li>
     </ul>
 </body>
 </html>
