@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Наша библиотека</title>
+        <style>
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrapper > div {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class=wrapper>
+        <h1>{{ top_books.title }}</h1>
+        <p>Автор книги: {{ author.first_name }} {{ author.last_name }}</p>
+        <p>Выпущена: {{ top_books.pub_date }}</p>
+        <p>Голосов: {{ top_books.votes }}</p>
+    </div>
+    <div>
+        {% for author in authors %}
+            {% for top_books in author.top_books.all %}
+                <li><a href="{% url 'detail' author.id top_books.id %}">{{ author.first_name }} {{ author.last_name }}</a></li>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</body>

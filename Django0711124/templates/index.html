@@ -18,15 +18,16 @@
     </style>
 </head>
 
-<body>
+<body class="wrapper">
     <div>
       <h1>Лучшие писатели 20 и 21 веков!</h1>
     </div>
     <ul>
-        {% for author in authors %}
-            <li><a href="{% url 'detail' author.id top_books.id %}"> 
-                {{ author.id }} Автор {{ author.first_name }} {{ author.last_name }}</a></li>
+    {% for author in authors %}
+        {% for top_books in author.top_books.all %}
+            <li><a href="{% url 'detail' author.id top_books.id %}">{{ author.first_name }} {{ author.last_name }}</a></li>
         {% endfor %}
+    {% endfor %}
     </ul>
 </body>
 </html>
