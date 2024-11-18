@@ -5,7 +5,7 @@
     <title>Удаление контакта</title>
 </head>
 <body>
-  <p>Вы уверены, что хотите удалить контакт ? : {{ contact.name }}?</p>
+  <p>Вы уверены, что хотите удалить контакт ? : {{contact.name}}?</p>
 <form method="post">
     {% csrf_token %}
     <button type="submit">Подтвердить</button>

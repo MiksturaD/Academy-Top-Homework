@@ -1,13 +1,10 @@
-from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render, get_object_or_404
-from django.template.defaultfilters import title
-from contact.models import Contact
+from django.shortcuts import render, get_object_or_404, redirect
+from contacts.models import Contact
 from .forms import ContactForm
 
 def contact_list(request):
     contacts = Contact.objects.all()
-    return render(request, 'contact_list.html', {'contacts': contacts,
-                                                 'name': name, 'email': email})
+    return render(request, 'contact_list.html', {'contacts': contacts})
 
 
 def add_contact(request):
@@ -20,8 +17,8 @@ def add_contact(request):
         form = ContactForm()
     return render(request, 'add_contact.html', {'form': form})
 
-def delete_contact(request, contact_id):
-    contact = get_object_or_404(Contact, id=contact_id)
+def delete_contact(request, id):
+    contact = get_object_or_404(Contact, id=id)
     if request.method == 'POST':
         contact.delete()
         return redirect('contact_list')  # Redirect to the contact list page after deleting
