@@ -18,16 +18,21 @@
 </head>
 <body>
     <div class=wrapper>
-        <h1>{{ top_books.title }}</h1>
-        <p>Автор книги: {{ author.first_name }} {{ author.last_name }}</p>
-        <p>Выпущена: {{ top_books.pub_date }}</p>
-        <p>Голосов: {{ top_books.votes }}</p>
-    </div>
-    <div>
-        {% for author in authors %}
-            {% for top_books in author.top_books.all %}
-                <li><a href="{% url 'detail' author.id top_books.id %}">{{ author.first_name }} {{ author.last_name }}</a></li>
-            {% endfor %}
-        {% endfor %}
+            <h1>Наша библиотека</h1>
+        <ul>
+            {% if top_books %}
+                {% for book in top_books %}
+                    <li>
+                        <h2>{{ book.title }}</h2>
+                        <p>Автор книги: {{ book.author.first_name }} {{ book.author.last_name }}</p>
+                        <p>Выпущена: {{ book.pub_date }}</p>
+                        <p>Голосов: {{ book.votes }}</p>
+                        <a href="{% url 'detail' book.author.id book.id %}">Подробнее</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>Нет доступных книг.</li>
+            {% endif %}
+        </ul>
     </div>
 </body>
