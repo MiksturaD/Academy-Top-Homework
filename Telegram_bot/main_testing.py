@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
-
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 import telebot
 
 from telebot import types
@@ -12,6 +14,11 @@ bot = telebot.TeleBot(token)
 # Список для хранения привычек
 habits = []
 
+# Настройка подключения к базе данных (например, SQLite)
+engine = create_engine('sqlite:///habits.db')
+Base = declarative_base()
+Session = sessionmaker(bind=engine)
+session = Session()
 
 # Функция, обрабатывающая команду /start
 @bot.message_handler(commands=["start"])
@@ -51,101 +58,69 @@ def handle_text(message, create_habit=None):
         bot.send_message(message.chat.id, 'Здесь будем выполнять действие по привычке')
 
 
-class Habit:
-    def __init__(self, name: str, description: str = None, target_date: str = None) -> None:
-        self.name = name
-        self.description = description
-        self.target_date = target_date
+class Habit(Base):
+    __tablename__ = 'habits'
 
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    description = Column(String)
+    target_date = Column(DateTime)
 
-    def __repr__(self) -> str:
+    Base.metadata.create_all(engine)
+
+    def __repr__(self):
         return f'Название: {self.name}\nОписание: {self.description}\nЦелевая дата: {self.target_date}'
 
     def save(self, habits: list):
         habits.append(self)
 
     @staticmethod
-    def view_habits(message) -> None:
-        try:
-            with open('habits.json', 'r', encoding='utf-8') as f:
-                loaded_json = json.load(f)
-
-            habits = []
-            for habit_data in loaded_json:
-                habit = Habit(name=habit_data['name'], description=habit_data.get('description'),
-                              target_date=habit_data['target_date'])
-                habits.append(str(habit))
-
-            habits_str = '\n\n'.join(habits)
-            bot.send_message(message.chat.id, f'Ваши привычки:\n\n{habits_str}')
-        except FileNotFoundError:
-            bot.send_message(message.chat.id, 'Файл с привычками не найден.')
-        except json.JSONDecodeError:
-            bot.send_message(message.chat.id, 'Произошла ошибка при чтении файла.')
-
-    @staticmethod
-    def delete_habit(message):
-        try:
-            with open('habits.txt', 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-
-            with open('habits.txt', 'w', encoding='utf-8') as f:
-                deleted = False
-                for line in lines:
-                    habit_data = line.strip().split(',')
-                    print(f"Проверяемая строка: {line.strip()}")  # Отладочная информация
-                    if message == habit_data[0].strip():
-                        print(f"Удаляемая строка: {line.strip()}")  # Отладочная информация
-                        deleted = True
-                    else:
-                        f.write(line)
-                if deleted:
-                    bot.send_message(message.chat.id, 'Привычка успешно удалена!')
-                else:
-                    bot.send_message(message.chat.id, 'Привычка с таким названием не найдена.')
-        except FileNotFoundError:
-            bot.send_message(message.chat.id, 'Файл с привычками не найден.')
-        except IOError:
-            bot.send_message(message.chat.id, 'Произошла ошибка при чтении файла.')
-
-    @staticmethod
     def create_habit(message):
         habit_name = message.text
-        habits.append({'name': habit_name,
-                       'description': '',
-                       'target_date': None
-                       })
-        bot.send_message(message.chat.id,
-                         f'Привычка "{habit_name}" успешно создана! Теперь вы можете добавить описание или целевую дату.')
+        new_habit = Habit(name=habit_name)
+        session.add(new_habit)
+        session.commit()
+        bot.send_message(message.chat.id, f'Привычка "{habit_name}" успешно создана!')
         bot.send_message(message.chat.id, 'Введите описание привычки:')
         bot.register_next_step_handler(message, Habit.create_habit_description)
 
     @staticmethod
     def create_habit_description(message):
         habit_description = message.text
-        habits[-1]['description'] = habit_description
+        habit = session.query(Habit).order_by(Habit.id.desc()).first()
+        habit.description = habit_description
+        session.commit()
         bot.send_message(message.chat.id, 'Теперь введите целевую дату выполнения привычки в формате дд.мм.гггг:')
         bot.register_next_step_handler(message, Habit.create_habit_target_date)
-
-    @staticmethod
-    def _datetime_to_json(obj):
-        if isinstance(obj, datetime):
-            return obj.strftime('%d.%m.%Y')
-        raise TypeError(f'Object of type {obj.__class__.__name__} '
-                        f'is not JSON serializable')
 
     @staticmethod
     def create_habit_target_date(message):
         try:
             target_date = datetime.strptime(message.text, '%d.%m.%Y')
-            habit = {'name': habits[-1]['name'], 'description': habits[-1]['description'], 'target_date': target_date}
-            habits[-1] = habit
-            with open('habits.json', 'a', encoding='utf-8') as f:
-                json.dump(habits, f,  ensure_ascii=False, default=Habit._datetime_to_json)
+            habit = session.query(Habit).order_by(Habit.id.desc()).first()
+            habit.target_date = target_date
+            session.commit()
             bot.send_message(message.chat.id, 'Привычка успешно создана!')
         except ValueError:
             bot.send_message(message.chat.id, 'Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.')
             bot.register_next_step_handler(message, Habit.create_habit_target_date)
+
+    @staticmethod
+    def view_habits(message):
+        habits = session.query(Habit).all()
+        habits_str = '\n\n'.join(str(habit) for habit in habits)
+        bot.send_message(message.chat.id, f'Ваши привычки:\n\n{habits_str}')
+
+    @staticmethod
+    def delete_habit(message):
+        habit_name = message.text
+        habit = session.query(Habit).filter_by(name=habit_name).first()
+        if habit:
+            session.delete(habit)
+            session.commit()
+            bot.send_message(message.chat.id, 'Привычка успешно удалена!')
+        else:
+            bot.send_message(message.chat.id, 'Привычка с таким названием не найдена.')
 
 
 # Запускаем бота
