@@ -4,7 +4,7 @@ from telebot import types
 from list import token
 import sys
 import os
-from bot.database import init_db, add_habit, get_habits, delete_habit
+from bot.database import init_db, add_habit, get_habits, delete_habit, add_habit_progress, get_habit_progress
 from bot.utils import Habit
 # Создаем экземпляр бота
 bot = telebot.TeleBot(token)
@@ -49,6 +49,7 @@ def handle_text(message, create_habit=None):
         bot.register_next_step_handler(message, Habit_bot.delete_habit_name)
     elif message.text.strip() == 'Выполнение привычки':
         bot.send_message(message.chat.id, 'Здесь будем выполнять действие по привычке')
+        bot.register_next_step_handler(message, Habit_bot.execute_habit_name)
 
 
 class Habit_bot:
@@ -112,6 +113,25 @@ class Habit_bot:
             bot.register_next_step_handler(message, Habit_bot.create_habit_target_date, habit_name=habit_name,
                                            habit_description=habit_description)
 
+    @staticmethod
+    def execute_habit_name(message):
+        """Обработчик ввода названия привычки для выполнения."""
+        habit_name = message.text
+        habits = get_habits()
+        habit = next((h for h in habits if h['name'] == habit_name), None)
+        if habit:
+            bot.send_message(message.chat.id, 'Введите прогресс выполнения привычки:')
+            bot.register_next_step_handler(message, Habit_bot.execute_habit_progress, habit_id=habit['id'])
+        else:
+            bot.send_message(message.chat.id, f'Привычка с названием "{habit_name}" не найдена.')
+
+    @staticmethod
+    def execute_habit_progress(message, habit_id: int):
+        """Обработчик ввода прогресса выполнения привычки."""
+        progress = message.text
+        progress_date = datetime.now().strftime('%d.%m.%Y')
+        add_habit_progress(habit_id, progress_date, progress)
+        bot.send_message(message.chat.id, f'Прогресс выполнения привычки успешно сохранен!')
 
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
