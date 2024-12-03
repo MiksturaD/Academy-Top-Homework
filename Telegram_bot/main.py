@@ -48,7 +48,7 @@ def handle_text(message, create_habit=None):
         bot.send_message(message.chat.id, 'Введите название привычки для удаления:')
         bot.register_next_step_handler(message, Habit_bot.delete_habit_name)
     elif message.text.strip() == 'Выполнение привычки':
-        bot.send_message(message.chat.id, 'Здесь будем выполнять действие по привычке')
+        bot.send_message(message.chat.id, 'Введите название привычки, которую хотите выполнить:')
         bot.register_next_step_handler(message, Habit_bot.execute_habit_name)
 
 
@@ -104,7 +104,7 @@ class Habit_bot:
     def create_habit_target_date(message, habit_name: str, habit_description: str):
         """Обработчик ввода целевой даты привычки."""
         try:
-            target_date = message.text
+            target_date = datetime.strptime(message.text, '%d.%m.%Y')
             habit = Habit(name=habit_name, description=habit_description, target_date=target_date)
             add_habit(habit.name, habit.description, habit.target_date)
             bot.send_message(message.chat.id, f'Привычка "{habit.name}" успешно создана!')
