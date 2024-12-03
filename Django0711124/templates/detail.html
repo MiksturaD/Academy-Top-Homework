@@ -3,10 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Писатель {{ author.first_name }} {{ author.last_name }}</title>
+        <style>
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrapper > div {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ top_book.title }}</h1>
-    <p>Автор книги: {{ author.first_name }} {{ author.last_name }}</p>
-    <p>Выпущена: {{ top_book.pub_date }}</p>
-    <p>Голосов: {{ top_book.votes }}</p>
+    <div class=wrapper>
+        <h1>{{ top_book.title }}</h1>
+        <p>Автор книги: {{ author.first_name }} {{ author.last_name }}</p>
+        <p>Выпущена: {{ top_book.pub_date }}</p>
+        <p>Голосов: {{ top_book.votes }}</p>
+    </div>    
 </body>
