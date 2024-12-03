@@ -2,12 +2,15 @@ from datetime import datetime
 import telebot
 from telebot import types
 from list import token
-
+import sys
+import os
+from bot.database import init_db, add_habit, get_habits, delete_habit
+from bot.utils import Habit
 # Создаем экземпляр бота
 bot = telebot.TeleBot(token)
 
-# Список для хранения привычек
-habits = []
+# Инициализация базы данных
+init_db()
 
 
 # Функция, обрабатывающая команду /start
@@ -31,94 +34,83 @@ def start(m, res=False):
                                      reply_markup=markup)
 
 
-# Получение сообщений от юзера
+
 @bot.message_handler(content_types=["text"])
-def handle_text(message):
+def handle_text(message, create_habit=None):
     # Если юзер прислал 1, создаем новую привычку
     if message.text.strip() == 'Создание привычки':
         bot.send_message(message.chat.id, 'Введите название привычки:')
-        bot.register_next_step_handler(message, create_habit)
+        bot.register_next_step_handler(message, Habit_bot.create_habit_name)
     # Если юзер прислал 2, выдаем список привычек
     elif message.text.strip() == 'Список привычек':
-        bot.send_message(message.chat.id, view_habits(message))
+        Habit_bot.view_habits(message)  # Вызов метода view_habits с передачей сообщения
     elif message.text.strip() == 'Удаление привычки':
         bot.send_message(message.chat.id, 'Введите название привычки для удаления:')
-        bot.register_next_step_handler(message, delete_habit)
+        bot.register_next_step_handler(message, Habit_bot.delete_habit_name)
     elif message.text.strip() == 'Выполнение привычки':
         bot.send_message(message.chat.id, 'Здесь будем выполнять действие по привычке')
 
 
-def view_habits(message):
-    habits = []
-    with open('habits.txt', 'r', encoding='utf-8') as f:
-        for line in f:
-            habit_data = line.strip().split(',')
-            habit = {
-                'name': habit_data[0],
-                'description': habit_data[1],
-                'target_date': habit_data[2]
-            }
-            habits.append(habit)
-    habits_str = '\n'.join([
-        f'Название: {habit["name"]}\nОписание: {habit["description"]}\nЦелевая дата: {habit["target_date"]}'
-        for habit in habits
-    ])
-    return f'Ваши привычки:\n{habits_str}'
+class Habit_bot:
+
+    def __init__(self, name: str, description: str = None, target_date: str = None) -> None:
+        self.name = name
+        self.description = description
+        self.target_date = target_date
 
 
-def delete_habit(message):
-    try:
-        with open('habits.txt', 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-
-        with open('habits.txt', 'w', encoding='utf-8') as f:
-            deleted = False
-            for line in lines:
-                habit_data = line.strip().split(',')
-                print(f"Проверяемая строка: {line.strip()}")  # Отладочная информация
-                if message == habit_data[0].strip():
-                    print(f"Удаляемая строка: {line.strip()}")  # Отладочная информация
-                    deleted = True
-                else:
-                    f.write(line)
-            if deleted:
-                bot.send_message(message.chat.id, 'Привычка успешно удалена!')
-            else:
-                bot.send_message(message.chat.id, 'Привычка с таким названием не найдена.')
-    except FileNotFoundError:
-        bot.send_message(message.chat.id, 'Файл с привычками не найден.')
-    except IOError:
-        bot.send_message(message.chat.id, 'Произошла ошибка при чтении файла.')
+    def __repr__(self) -> str:
+        return f'Название: {self.name}\nОписание: {self.description}\nЦелевая дата: {self.target_date}'
 
 
-def create_habit(message):
-    habit_name = message.text
-    habits.append({'name': habit_name, 'description': '', 'target_date': None})
-    bot.send_message(message.chat.id,
-                                     f'Привычка "{habit_name}" успешно создана! Теперь вы можете добавить описание или целевую дату.')
-    bot.send_message(message.chat.id, 'Введите описание привычки:')
-    bot.register_next_step_handler(message, create_habit_description)
+    @staticmethod
+    def view_habits(message):
+        """Отображение списка привычек."""
+        habits = get_habits()
+        if habits:
+            habits_str = '\n\n'.join(
+                [str(Habit(habit['name'], habit['description'], habit['target_date'])) for habit in habits])
+            bot.send_message(message.chat.id, f'Ваши привычки:\n\n{habits_str}')
+        else:
+            bot.send_message(message.chat.id, 'У вас нет привычек.')
 
 
-def create_habit_description(message):
-    habit_description = message.text
-    habits[-1]['description'] = habit_description
-    bot.send_message(message.chat.id, 'Теперь введите целевую дату выполнения привычки в формате дд.мм.гггг:')
-    bot.register_next_step_handler(message, create_habit_target_date)
+    @staticmethod
+    def delete_habit_name(message):
+        """Обработчик ввода названия привычки для удаления."""
+        habit_name = message.text
+        if delete_habit(habit_name):
+            bot.send_message(message.chat.id, f'Привычка "{habit_name}" успешно удалена!')
+        else:
+            bot.send_message(message.chat.id, f'Привычка с названием "{habit_name}" не найдена.')
+
+    @staticmethod
+    def create_habit_name(message):
+        """Обработчик ввода названия привычки."""
+        bot.send_message(message.chat.id, 'Введите описание привычки:')
+        bot.register_next_step_handler(message, Habit_bot.create_habit_description, habit_name=message.text)
 
 
-def create_habit_target_date(message):
-    try:
-        target_date = datetime.strptime(message.text, '%d.%m.%Y')
-        habit = {'name': habits[-1]['name'], 'description': habits[-1]['description'], 'target_date': target_date}
-        habits[-1] = habit
-        habit_str = f"Описание: {habit['name']},Описание: {habit['description']},Целевая дата: {habit['target_date']}"
-        with open('habits.txt', 'a', encoding='utf-8') as f:
-            f.write(habit_str + '\n')  # Записываем каждую привычку на новой строке
-        bot.send_message(message.chat.id, 'Привычка успешно создана!')
-    except ValueError:
-        bot.send_message(message.chat.id, 'Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.')
-        bot.register_next_step_handler(message, create_habit_target_date)
+    @staticmethod
+    def create_habit_description(message, habit_name: str):
+        """Обработчик ввода описания привычки."""
+        bot.send_message(message.chat.id, 'Введите целевую дату выполнения привычки в формате ДД.ММ.ГГГГ:')
+        bot.register_next_step_handler(message, Habit_bot.create_habit_target_date, habit_name=habit_name,
+                                            habit_description=message.text)
+
+
+    @staticmethod
+    def create_habit_target_date(message, habit_name: str, habit_description: str):
+        """Обработчик ввода целевой даты привычки."""
+        try:
+            target_date = message.text
+            habit = Habit(name=habit_name, description=habit_description, target_date=target_date)
+            add_habit(habit.name, habit.description, habit.target_date)
+            bot.send_message(message.chat.id, f'Привычка "{habit.name}" успешно создана!')
+        except ValueError:
+            bot.send_message(message.chat.id, 'Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.')
+            bot.register_next_step_handler(message, Habit_bot.create_habit_target_date, habit_name=habit_name,
+                                           habit_description=habit_description)
 
 
 # Запускаем бота
