@@ -10,8 +10,10 @@ def init_db():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS habits (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
             name TEXT NOT NULL,
             description TEXT,
+            metric TEXT,
             target_date TEXT
         )
     ''')
@@ -28,32 +30,37 @@ def init_db():
     conn.commit()
     conn.close()
 
-def add_habit(name: str, description: str, target_date: str) -> None:
+def add_habit(user_id: int, name: str, description: str, metric: str, target_date: str) -> None:
     """Добавление новой привычки в базу данных."""
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO habits (name, description, target_date) VALUES (?, ?, ?)', (name, description, target_date))
+    cursor.execute('INSERT INTO habits (user_id, name, description, metric, target_date) VALUES (?, ?, ?, ?, ?)',
+                   (user_id, name, description, metric, target_date))
     conn.commit()
     conn.close()
 
-def get_habits() -> List[Dict]:
-    """Получение всех привычек из базы данных."""
+def get_habits(user_id: int) -> List[Dict]:
+    """Получение всех привычек из базы данных для конкретного пользователя."""
     conn = sqlite3.connect(DATABASE_PATH)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM habits')
+    cursor.execute('SELECT * FROM habits WHERE user_id = ?', (user_id,))
     habits = cursor.fetchall()
     conn.close()
-    return [{'id': habit[0], 'name': habit[1], 'description': habit[2], 'target_date': habit[3]} for habit in habits]
+    return [{'id': habit[0], 'user_id': habit[1], 'name': habit[2], 'description': habit[3], 'metric': habit[4], 'target_date': habit[5]} for habit in habits]
 
-def delete_habit(name: str) -> bool:
-    """Удаление привычки из базы данных по названию."""
-    conn = sqlite3.connect(DATABASE_PATH)
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM habits WHERE name = ?', (name,))
-    conn.commit()
-    deleted = cursor.rowcount > 0
-    conn.close()
-    return deleted
+def delete_habit(user_id: int, habit_id: int) -> bool:
+    """Удаление привычки из базы данных по ID."""
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM habits WHERE user_id = ? AND id = ?', (user_id, habit_id))
+        conn.commit()
+        deleted = cursor.rowcount > 0
+        conn.close()
+        return deleted
+    except sqlite3.Error as e:
+        print(f"Ошибка при удалении привычки: {e}")
+        return False
 
 def add_habit_progress(habit_id: int, progress_date: str, progress: str) -> None:
     """Добавление прогресса выполнения привычки."""
