@@ -3,7 +3,8 @@ from datetime import datetime
 import telebot
 from telebot import types
 from list import token
-
+import schedule
+import time
 from bot.database import init_db, add_habit, get_habits, delete_habit, add_habit_progress, get_habit_progress
 from bot.utils import Habit
 
@@ -201,6 +202,26 @@ class Habit_bot:
     def send_reminder(chat_id, reminder_name):
         """Функция, которая отправляет напоминание пользователю"""
         bot.send_message(chat_id, f'Время получить ваше напоминание!{reminder_name}')
+
+    def schedule_reminder(chat_id, reminder_name, reminder_time):
+        """Функция для планирования напоминания в определенное время"""
+
+        def job():
+            Habit_bot.send_reminder(chat_id, reminder_name)
+
+        # Преобразуем время в формат, понятный schedule
+        schedule_time = reminder_time.strftime('%H:%M')
+        schedule.every().day.at(schedule_time).do(job)
+
+    def run_scheduler():
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
+    # Запуск планировщика в отдельном потоке
+    scheduler_thread = threading.Thread(target=run_scheduler)
+    scheduler_thread.daemon = True
+    scheduler_thread.start()
 
     @staticmethod
     def execute_habit_name(message):
