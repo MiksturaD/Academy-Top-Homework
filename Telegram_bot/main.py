@@ -1,3 +1,4 @@
+import threading
 from datetime import datetime
 import telebot
 from telebot import types
@@ -58,6 +59,11 @@ def handle_text(message, create_habit=None):
     elif message.text.strip() == 'Показать текущий прогресс выполнение привычки':
         bot.send_message(message.chat.id, 'Введите ID привычки, которую хотите посмотреть:')
         bot.register_next_step_handler(message, Habit_bot.view_habit_progress_id)
+    elif message.text.strip() == 'Написать автору':
+        bot.send_message(message.chat.id, 'Напишите, что вы хотели бы сказать автору бота')
+        bot.register_next_step_handler(message, Habit_bot.feedback)
+
+
 
 
 
@@ -74,6 +80,13 @@ class Habit_bot:
     def __repr__(self) -> str:
         return (f'Название: {self.name}\nОписание: {self.description}\nЕдиница измерения: {self.metric}\n'
                 f'Целевая дата: {self.target_date}')
+
+    def feedback(message):
+        author_user_id = "332286763"
+        user_message = message.text
+        bot.send_message(author_user_id, f'Вам написал фанат вашего бота - {message.from_user.id} '
+                                         f'И вот что он пишет: {user_message}')
+        bot.send_message(message.chat.id, 'Сообщение отправлено автору бота')
 
     @staticmethod
     def view_habits(message):
@@ -131,13 +144,63 @@ class Habit_bot:
         user_id = message.from_user.id
         try:
             target_date = datetime.strptime(message.text, '%d.%m.%Y')
-            habit = Habit(name=habit_name, description=habit_description, metric=habit_metric, target_date=target_date)
-            add_habit(user_id, habit.name, habit.description, habit.metric, habit.target_date)
-            bot.send_message(message.chat.id, f'Привычка "{habit.name}" успешно создана!')
+            now = datetime.now()
+            delta = target_date - now
+            if delta.total_seconds() <= 0:
+                bot.send_message(message.chat.id, 'Вы ввели прошедшую дату, попробуйте еще раз.')
+                bot.register_next_step_handler(message, Habit_bot.create_habit_target_date, habit_name=habit_name,
+                                          habit_description=habit_description, habit_metric=habit_metric)
+            else:
+                habit = Habit(name=habit_name, description=habit_description, metric=habit_metric, target_date=target_date)
+                add_habit(user_id, habit.name, habit.description, habit.metric, habit.target_date)
+                bot.send_message(message.chat.id, 'Хотите установить напоминание на привычку?')
+                bot.register_next_step_handler(message, Habit_bot.ask_for_reminder, habit=habit)
         except ValueError:
             bot.send_message(message.chat.id, 'Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.')
             bot.register_next_step_handler(message, Habit_bot.create_habit_target_date, habit_name=habit_name,
                                            habit_description=habit_description, habit_metric=habit_metric)
+
+    @staticmethod
+    def ask_for_reminder(message, habit):
+        """Обработчик ответа на вопрос о создании напоминания."""
+        if message.text.strip() == 'да':
+            bot.send_message(message.chat.id, 'Введите название напоминания:')
+            bot.register_next_step_handler(message, Habit_bot.set_reminder_name)
+        else:
+            bot.send_message(message.chat.id, f'Привычка "{habit.name}" успешно создана!')
+
+
+    @staticmethod
+    def set_reminder_name(message):
+        """ Функция, которую вызывает обработчик команды /reminder для установки названия напоминания"""
+        reminder_name = message.text
+        bot.send_message(message.chat.id, 'Введите дату и время, когда вы хотите получить напоминание в формате ДД.ММ.ГГГГ чч:мм:сс.')
+        bot.register_next_step_handler(message, Habit_bot.reminder_set, reminder_name = reminder_name)
+
+    @staticmethod
+    def reminder_set(message, reminder_name: str):
+        """ Функция для установки напоминания"""
+        try:
+            # Преобразуем введенную пользователем дату и время в формат datetime
+            reminder_time = datetime.strptime(message.text, '%d.%m.%Y %H:%M:%S')
+            now = datetime.now()
+            delta = reminder_time - now
+            # Если введенная пользователем дата и время уже прошли, выводим сообщение об ошибке
+            if delta.total_seconds() <= 0:
+                bot.send_message(message.chat.id, 'Вы ввели прошедшую дату, попробуйте еще раз.')
+                # Если пользователь ввел корректную дату и время, устанавливаем напоминание и запускаем таймер
+            else:
+                bot.send_message(message.chat.id, f'Напоминание {reminder_name} установлено на - {reminder_time}')
+
+                # Если пользователь ввел некорректную дату и время, выводим сообщение об ошибке
+        except ValueError:
+            bot.send_message(message.chat.id, 'Вы ввели неверный формат даты и времени, попробуйте еще раз.')
+
+
+    @staticmethod
+    def send_reminder(chat_id, reminder_name):
+        """Функция, которая отправляет напоминание пользователю"""
+        bot.send_message(chat_id, f'Время получить ваше напоминание!{reminder_name}')
 
     @staticmethod
     def execute_habit_name(message):
@@ -202,6 +265,7 @@ class Habit_bot:
             bot.send_message(message.chat.id, summary_str)
         else:
             bot.send_message(message.chat.id, 'У вас нулевой прогресс.')
+
 
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
