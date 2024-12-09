@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ category.name }}</h1>
+
+  <div class="row flex-column gap-4 align-items-center">
+    <h2>Товары в категории</h2>
+        {% for product in products %}
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <pre class="card-text">{{ task.description }}</pre>
+                <h6 class="card-subtitle mb-2 gap text-body-secondary">{{ product.price }}</h6>  
+                <a href="#" class="card-link">Посмотреть товар подробнее</a>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">В этой категории еще нет товаров</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">Но они появятся скоро!</h6>
+                <p class="card-text">все хотят товары!</p>
+                <a href="#" class="card-link">Что-то</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+  </div>
+{% endblock %}

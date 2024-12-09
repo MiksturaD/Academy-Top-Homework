@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Аудио категории</h1>
+  <p class="mb-5 text-body-secondary">Категории аудио техники</p>
+  <div class="row flex-column gap-4 align-items-center">
+    {% for category in category %}
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ category.name }}</h5>
+            <a href="{% url 'category' category.id %}" class="card-link">Открыть подробнее</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

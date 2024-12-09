@@ -15,22 +15,19 @@ bot = telebot.TeleBot(token)
 # Инициализация базы данных
 init_db()
 
-
 # Функция, обрабатывающая команду /start
 @bot.message_handler(commands=["start"])
 def start(m, res=False):
     # Добавляем 5 кнопок
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1 = types.KeyboardButton("Создание привычки")
-    item2 = types.KeyboardButton("Список привычек")
-    item3 = types.KeyboardButton("Удаление привычки")
-    item4 = types.KeyboardButton("Выполнение привычки")
-    item5 = types.KeyboardButton("Показать текущий прогресс выполнение привычки")
-    item6 = types.KeyboardButton("Написать автору")
+    markup = types.InlineKeyboardMarkup()
+    button_1 = types.InlineKeyboardButton(text="Создание привычки", callback_data='create_habit')
+    button_2 = types.InlineKeyboardButton(text="Список привычек", callback_data='view_habits')
+    button_3 = types.InlineKeyboardButton(text="Удаление привычки", callback_data='delete_habit')
+    button_4 = types.InlineKeyboardButton(text="Выполнение привычки", callback_data='execute_habit')
+    button_5 = types.InlineKeyboardButton(text="Показать текущий прогресс выполнения привычки", callback_data='view_progress')
+    button_6 = types.InlineKeyboardButton(text="Написать автору", callback_data='feedback')
 
-    markup.add(item1, item2)
-    markup.add(item3, item4)
-    markup.add(item5, item6)
+    markup.add(button_1, button_2, button_3, button_4, button_5, button_6)
 
     bot.send_message(m.chat.id, 'Нажми:'
                                 '\nСоздание привычки - для создания новой привычки'
@@ -40,34 +37,26 @@ def start(m, res=False):
                                 '\nПоказать текущий прогресс выполнения привычки - для просмотра прогресса выполнения привычки',
                      reply_markup=markup)
 
-
-
-@bot.message_handler(content_types=["text"])
-def handle_text(message, create_habit=None):
-    habit_id = 0
-    # Если юзер прислал 1, создаем новую привычку
-    if message.text.strip() == 'Создание привычки':
-        bot.send_message(message.chat.id, 'Напиши название привычки:')
-        bot.register_next_step_handler(message, Habit_bot.create_habit_name)
-    # Если юзер прислал 2, выдаем список привычек
-    elif message.text.strip() == 'Список привычек':
-        Habit_bot.view_habits(message)  # Вызов метода view_habits с передачей сообщения
-    elif message.text.strip() == 'Удаление привычки':
-        bot.send_message(message.chat.id, 'Введи ID привычки для удаления:')
-        bot.register_next_step_handler(message, Habit_bot.delete_habit_name)
-    elif message.text.strip() == 'Выполнить привычку':
-        bot.send_message(message.chat.id, 'Введи ID привычки, которую хочешь выполнить:')
-        bot.register_next_step_handler(message, Habit_bot.execute_habit_name)
-    elif message.text.strip() == 'Показать текущий прогресс выполнение привычки':
-        bot.send_message(message.chat.id, 'Введи ID привычки, которую хочешь посмотреть:')
-        bot.register_next_step_handler(message, Habit_bot.view_habit_progress_id)
-    elif message.text.strip() == 'Написать автору':
-        bot.send_message(message.chat.id, 'Напиши, что ты хочешь сказать автору бота')
-        bot.register_next_step_handler(message, Habit_bot.feedback)
-
-
-
-
+# Обработчик callback_query
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    if call.data == 'create_habit':
+        bot.send_message(call.message.chat.id, 'Напиши название привычки:')
+        bot.register_next_step_handler(call.message, Habit_bot.create_habit_name)
+    elif call.data == 'view_habits':
+        Habit_bot.view_habits(call.message)
+    elif call.data == 'delete_habit':
+        bot.send_message(call.message.chat.id, 'Введи ID привычки для удаления:')
+        bot.register_next_step_handler(call.message, Habit_bot.delete_habit_name)
+    elif call.data == 'execute_habit':
+        bot.send_message(call.message.chat.id, 'Введи ID привычки, которую хочешь выполнить:')
+        bot.register_next_step_handler(call.message, Habit_bot.execute_habit_name)
+    elif call.data == 'view_progress':
+        bot.send_message(call.message.chat.id, 'Введи ID привычки, которую хочешь посмотреть:')
+        bot.register_next_step_handler(call.message, Habit_bot.view_habit_progress_id)
+    elif call.data == 'feedback':
+        bot.send_message(call.message.chat.id, 'Напиши, что ты хочешь сказать автору бота')
+        bot.register_next_step_handler(call.message, Habit_bot.feedback)
 
 class Habit_bot:
 
@@ -77,12 +66,11 @@ class Habit_bot:
         self.metric = metric
         self.target_date = target_date
 
-
-
     def __repr__(self) -> str:
         return (f'Название: {self.name}\nОписание: {self.description}\nЕдиница измерения: {self.metric}\n'
                 f'Дата до которой ты хочешь выполнять привычку: {self.target_date}')
 
+    @staticmethod
     def feedback(message):
         author_user_id = "332286763"
         user_message = message.text
@@ -103,6 +91,7 @@ class Habit_bot:
             bot.send_message(message.chat.id, f'Твои привычки:\n\n{habits_str}')
         else:
             bot.send_message(message.chat.id, 'У тебя нет ни одной привычки (А надо бы, чтобы были!).')
+
 
     @staticmethod
     def delete_habit_name(message):
@@ -132,7 +121,6 @@ class Habit_bot:
                                           '(например для привычки "пить воду" - мл или стаканы)')
         bot.register_next_step_handler(message, Habit_bot.create_habit_metric, habit_name=habit_name,
                                        habit_description=habit_description)
-
 
     @staticmethod
     def create_habit_metric(message, habit_name: str, habit_description: str):
@@ -172,21 +160,20 @@ class Habit_bot:
         """Обработчик ответа на вопрос о создании напоминания."""
         if message.text == 'да':
             bot.send_message(message.chat.id, 'Придумай название напоминания:')
-            bot.register_next_step_handler(message, Habit_bot.set_reminder_name)
+            bot.register_next_step_handler(message, Habit_bot.set_reminder_name, habit=habit)
         else:
             bot.send_message(message.chat.id, f'Привычка "{habit.name}" успешно создана!')
 
-
     @staticmethod
-    def set_reminder_name(message):
+    def set_reminder_name(message, habit):
         """ Функция, которую вызывает обработчик команды /reminder для установки названия напоминания"""
         reminder_name = message.text
-        bot.send_message(message.chat.id, 'В какую дату и время начнем слать тебе спам о привычке? '
+        bot.send_message(message.chat.id, 'В какую дату и время начнем слать тебе напоминания о привычке? '
                                           'в формате ДД.ММ.ГГГГ чч:мм:сс.')
-        bot.register_next_step_handler(message, Habit_bot.reminder_set, reminder_name = reminder_name)
+        bot.register_next_step_handler(message, Habit_bot.reminder_set, reminder_name=reminder_name, habit=habit)
 
     @staticmethod
-    def reminder_set(message, reminder_name: str):
+    def reminder_set(message, reminder_name: str, habit):
         """ Функция для установки напоминания"""
         try:
             # Преобразуем введенную пользователем дату и время в формат datetime
@@ -207,12 +194,12 @@ class Habit_bot:
             bot.send_message(message.chat.id, 'Не правильный ввод даты, давай ка еще раз в '
                                               'формате ДД.ММ.ГГГГ чч:мм:сс')
 
-
     @staticmethod
     def send_reminder(chat_id, reminder_name):
         """Функция, которая отправляет напоминание пользователю"""
         bot.send_message(chat_id, f'Время для - {reminder_name}, не забудь зафиксировать результат!')
 
+    @staticmethod
     def schedule_reminder(chat_id, reminder_name, reminder_time):
         """Функция для планирования напоминания в определенное время"""
 
@@ -223,6 +210,7 @@ class Habit_bot:
         schedule_time = reminder_time.strftime('%H:%M')
         schedule.every().day.at(schedule_time).do(job)
 
+    @staticmethod
     def run_scheduler():
         while True:
             schedule.run_pending()
@@ -296,8 +284,6 @@ class Habit_bot:
             bot.send_message(message.chat.id, summary_str)
         else:
             bot.send_message(message.chat.id, 'У тебя нулевой прогресс.')
-
-
 
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Мой интернет магазин по продаже Hi-Fi техники</h1>
+  <p class="mb-5 text-body-secondary">Здесь вы сможете приобрести как акустику, так и все необходимое оборудование
+  для качественного звука
+  </p>
+  {% for category in categories %}  
+  <div class="row flex-column gap-4 align-items-center">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ category.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{ category.name }}</h6>
+          <p class="card-text">Посмотреть детальнее</p>
+          <a href="{% url 'category' category.id  %}" class="card-link">Посмотреть</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}  
+{% endblock %}
