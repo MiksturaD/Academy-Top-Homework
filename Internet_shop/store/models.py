@@ -22,5 +22,6 @@ class Order(models.Model):
   order_date = models.DateTimeField()
   line = models.ManyToManyField(Product)
 
+
   def __str__(self):
     return f'{self.customer_name}, {self.order_date}, {self.line}'

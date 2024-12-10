@@ -10,9 +10,13 @@
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
-                <pre class="card-text">{{ task.description }}</pre>
-                <h6 class="card-subtitle mb-2 gap text-body-secondary">{{ product.price }}</h6>  
-                <a href="#" class="card-link">Посмотреть товар подробнее</a>
+                <pre class="card-text">{{ product.description }}</pre>
+                <h6 class="card-subtitle mb-2 gap text-body-secondary">{{ product.price }}</h6>
+                  {%  if product.is_available %}
+                <h6 class="card-subtitle mb-2 gap text-body-secondary">Доступен к заказу </h6>
+                  {%  else %}
+                <h6 class="card-subtitle mb-2 gap text-body-secondary">Не доступен к заказу </h6>
+                  {% endif %}
               </div>
             </div>
           </div>
@@ -23,7 +27,6 @@
                 <h5 class="card-title">В этой категории еще нет товаров</h5>
                 <h6 class="card-subtitle mb-2 text-body-secondary">Но они появятся скоро!</h6>
                 <p class="card-text">все хотят товары!</p>
-                <a href="#" class="card-link">Что-то</a>
               </div>
             </div>
           </div>

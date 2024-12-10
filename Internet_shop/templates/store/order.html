@@ -1,34 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Список задач</h1>
-  <p class="mb-5 text-body-secondary">Все задачи в системе</p>
+  <h1>Заказ</h1>
   <div class="row flex-column gap-4 align-items-center">
-    {% for task in tasks %}
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-center gap-2">
-              <h5 class="card-title">{{ task.title }}</h5>
-              <span class="badge text-bg-dark mb-1">{{ task.project.name }}</span>
-            </div>
-            <h6 class="card-subtitle mb-2 text-body-secondary">{{ task.status }} - {{ task.due_date }}</h6>
-            <pre class="card-text">{{ task.description }}</pre>
-            <a href="#" class="card-link">Посмотреть задачу</a>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-2">
+            <h5 class="card-title">{{ order.customer_name }}</h5>
+            <span class="badge text-bg-dark mb-1">{{ order.customer_email }}</span>
           </div>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{ order.order_date }}</h6>
+          <pre class="card-text">Товары в заказе:</pre>
+          <ul>
+            {% for product in order.line.all %}
+              <li>{{ product.name }} - {{ product.price }}</li>
+            {% endfor %}
+        <h5 class="card-title">Общая стоимость: {{ total_price }}</h5>
         </div>
       </div>
-    {% empty %}
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Еще нет задач</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">Смотрю вы любите отдыхать...</h6>
-            <p class="card-text">Всем известно, что слона проще есть по частям</p>
-            <a href="#" class="card-link">Создать задачу</a>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
+    </div>
   </div>
 {% endblock %}
