@@ -79,3 +79,4 @@ def get_habit_progress(habit_id: int) -> List[Dict]:
     conn.close()
     return [{'id': p[0], 'habit_id': p[1], 'progress_date': p[2], 'progress': p[3]} for p in progress]
 
+# Tortise или tortoice sql библиотеки ORM

@@ -158,7 +158,7 @@ class Habit_bot:
     @staticmethod
     def ask_for_reminder(message, habit):
         """Обработчик ответа на вопрос о создании напоминания."""
-        if message.text == 'да':
+        if message.text.upper() == 'ДА':
             bot.send_message(message.chat.id, 'Придумай название напоминания:')
             bot.register_next_step_handler(message, Habit_bot.set_reminder_name, habit=habit)
         else:
