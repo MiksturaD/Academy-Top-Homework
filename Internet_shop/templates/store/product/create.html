@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="mb-5">Создание товара</h1>
+    
+    <form action="{% url 'create_product' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+            <div class="d-flex pt-4">
+                <button type="submit" class="btn btn-primary">Создать товар</button>
+            </div>
+    </form>
+
+{% endblock %}
