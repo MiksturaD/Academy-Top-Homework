@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+   {% extends 'base.html' %}
 
-</body>
-</html>
+   {% block content %}
+     <h1>Категория: {{ category.name }}</h1>
+     <div class="row flex-column gap-4 align-items-center">
+       {% for product in products %}
+       <div class="col-12">
+         <div class="card">
+           <div class="card-body">
+             <div class="d-flex align-items-center gap-2">
+               <h5 class="card-title">{{ product.name }}</h5>
+               <span class="badge text-bg-dark mb-1">{{ product.description }}</span>
+             </div>
+             <h6 class="card-subtitle mb-2 text-body-secondary">{{ product.price }}</h6>
+             <h5 class="card-title">Доступен к заказу: {{ product.is_available }}</h5>
+           </div>
+         </div>
+       </div>
+       {% empty %}
+       <div class="col-12">
+         <p>В этой категории нет товаров.</p>
+       </div>
+       {% endfor %}
+     </div>
+   {% endblock %}

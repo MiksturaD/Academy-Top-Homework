@@ -16,6 +16,7 @@
             {% for product in order.line.all %}
               <li>{{ product.name }} - {{ product.price }}</li>
             {% endfor %}
+          </ul>
         <h5 class="card-title">Общая стоимость: {{ total_price }}</h5>
         </div>
       </div>
