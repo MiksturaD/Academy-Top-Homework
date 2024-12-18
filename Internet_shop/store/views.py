@@ -1,7 +1,7 @@
 from itertools import product
 
 from django.shortcuts import render, get_object_or_404, redirect
-
+from store.forms import CategoryCreateForm, OrderCreateForm
 from store.models import Category, Product, Order
 
 
@@ -37,6 +37,22 @@ def order(request, order_id):
 
 def create_category(request):
   if request.method == 'POST':
-    name = request.POST['name']
-    return redirect('store/category/list.html')
-  return render(request, 'store/category/create.html')
+       form = CategoryCreateForm(request.POST)
+       if form.is_valid():
+          form.save()
+          return redirect('category')
+  else:
+    form = CategoryCreateForm()
+
+  return render(request, 'store/category/create.html', {'form': form})
+
+def create_order(request):
+  if request.method == 'POST':
+       form = OrderCreateForm(request.POST)
+       if form.is_valid():
+          form.save()
+          return redirect('order')
+  else:
+    form = OrderCreateForm()
+
+  return render(request, 'store/order/create.html', {'form': form})
