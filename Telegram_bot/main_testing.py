@@ -27,14 +27,15 @@ def start(m, res=False):
     button_5 = types.InlineKeyboardButton(text="Показать текущий прогресс выполнения привычки", callback_data='view_progress')
     button_6 = types.InlineKeyboardButton(text="Написать автору", callback_data='feedback')
 
-    markup.add(button_1, button_2, button_3, button_4, button_5, button_6)
+    # Добавляем кнопки в ряды по 2 штуки
+    markup.row(button_1, button_2)
+    markup.row(button_3, button_4)
+    markup.row(button_5)
+    markup.row(button_6)
 
-    bot.send_message(m.chat.id, 'Нажми:'
-                                '\nСоздание привычки - для создания новой привычки'
-                                '\nСписок привычек - для просмотра существующих привычек'
-                                '\nУдаление привычки - для удаления ненужной привычки'
-                                '\nВыполнение привычки - для фиксации действий по твоей привычке'
-                                '\nПоказать текущий прогресс выполнения привычки - для просмотра прогресса выполнения привычки',
+    bot.send_message(m.chat.id,
+                                '\nПривет, я полу-бот, с помощью меня ты сможешь создавать себе привычки'
+                                'выполнять по ним действия и следить за прогрессом выполнения!',
                      reply_markup=markup)
 
 # Обработчик callback_query
