@@ -5,7 +5,8 @@ from telebot import types
 from list import token
 import schedule
 import time
-from bot.database import init_db, add_habit, get_habits, delete_habit, add_habit_progress, get_habit_progress
+from bot.database import (init_db, add_habit, get_habits, delete_habit, add_habit_progress, get_habit_progress,
+                          get_last_message_time, get_user_username, update_user_username)
 from bot.utils import Habit
 
 
@@ -18,6 +19,19 @@ init_db()
 # Функция, обрабатывающая команду /start
 @bot.message_handler(commands=["start"])
 def start(m, res=False):
+    user_id = m.from_user.id
+    username = get_user_username(user_id)
+    if not username:
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        button = types.KeyboardButton(text="Отправить имя", request_contact=True)
+        markup.add(button)
+        bot.send_message(m.chat.id, 'Привет! Пожалуйста, отправьте ваше имя или нажмите кнопку для отправки контакта.', reply_markup=markup)
+    else:
+        last_message_time = get_last_message_time(user_id)
+        if last_message_time and (datetime.now() - datetime.strptime(last_message_time, '%d.%m.%Y %H:%M:%S')).days > 1:
+            bot.send_message(m.chat.id, f'Привет, {username}! Как поживают твои привычки? Может пора бы выполнить какую-либо?')
+        else:
+            bot.send_message(m.chat.id, f'Привет, {username}!')
     # Добавляем 5 кнопок
     markup = types.InlineKeyboardMarkup()
     button_1 = types.InlineKeyboardButton(text="Создание привычки", callback_data='create_habit')
@@ -38,6 +52,30 @@ def start(m, res=False):
                                 'выполнять по ним действия и следить за прогрессом выполнения!',
                      reply_markup=markup)
 
+@bot.message_handler(content_types=["text"])
+def handle_text(message):
+    user_id = message.from_user.id
+    get_last_message_time(user_id)
+    if message.text == "Отправить имя":
+        bot.send_message(message.chat.id, "Пожалуйста, напишите ваше имя:")
+    else:
+        username = get_user_username(user_id)
+        if not username:
+            update_user_username(user_id, message.text)
+            bot.send_message(message.chat.id, f'Ваше имя {message.text} успешно сохранено!')
+            start(message)
+        else:
+            bot.send_message(message.chat.id, "Я не понимаю, что вы хотите сказать.")
+
+# Обработчик контактов
+@bot.message_handler(content_types=["contact"])
+def handle_contact(message):
+    user_id = message.from_user.id
+    get_last_message_time(user_id)
+    if message.contact:
+        update_user_username(user_id, message.contact.first_name)
+        bot.send_message(message.chat.id, f'Ваше имя {message.contact.first_name} успешно сохранено!')
+        start(message)
 # Обработчик callback_query
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
@@ -75,7 +113,7 @@ class Habit_bot:
     def feedback(message):
         author_user_id = "332286763"
         user_message = message.text
-        bot.send_message(author_user_id, f'Вам написал фанат вашего бота - {message.from_user.id} '
+        bot.send_message(author_user_id, f'Вам написал фанат вашего бота - {message.from_user.username} '
                                          f'И вот что он пишет: {user_message}')
         bot.send_message(message.chat.id, 'Сообщение отправлено автору бота')
 
