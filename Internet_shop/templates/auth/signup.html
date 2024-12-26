@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="mb-5">Регистрация</h1>
+    <form action="{% url 'signup' %}" method="post">
+        {% csrf_token %}
+        <div class="form-floating mb-3">
+            {{ form.first_name }}
+            <label for="floatingFirstname">Имя</label>
+        </div>
+        <div class="form-floating mb-3">
+            {{ form.last_name }}
+            <label for="floatingLastname">Фамилия</label>
+        </div>
+        <div class="form-floating mb-3">
+            {{ form.username }}
+            <label for="floatingUsername">Логин</label>
+        </div>
+        <div class="form-floating mb-3">
+            {{ form.email }}
+            <label for="floatingEmail">Почта</label>
+        </div>
+        <div class="form-floating mb-3">
+            {{ form.password }}
+            <label for="floatingPassword">Пароль</label>
+        </div>
+        <div class="form-floating mb-3">
+            {{ form.confirm_password }}
+            <label for="floatingPasswordConfirm">Подтверждение пароля</label>
+        </div>
+        <div class="d-flex pt-4">
+            <button type="submit" class="btn btn-primary"> <a href="{% url 'signup' %}" class="btn btn-dark">>Зарегистрироваться</a></button>
+        </div>
+    </form>
+{% endblock %}
