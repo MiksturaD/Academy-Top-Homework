@@ -3,8 +3,8 @@ from itertools import product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from store.forms import CategoryCreateForm, OrderCreateForm, ProductCreateForm, SignupForm
-from store.models import Category, Product, Order
+from store.forms import CategoryCreateForm, OrderCreateForm, ProductCreateForm, SignupForm, CustomUserChangeForm
+from store.models import Category, Product, Order, User
 
 
 # Create your views here.
@@ -86,7 +86,7 @@ def signup(request):
       user = form.save(commit=False)
       user.set_password(form.cleaned_data['password'])  # Хэшируем пароль
       user.save()
-      return redirect('index')
+      return redirect('signin')
   else:
     form = SignupForm()
   return render(request, 'auth/signup.html', {'form': form})
@@ -101,7 +101,7 @@ def signin(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
       login(request, user)  # Вход пользователя
-      return redirect('index')  # Перенаправление после успешного входа
+      return redirect('main')  # Перенаправление после успешного входа
     else:
       # Ошибка входа
       return render(request, 'auth/signin.html', {'error': 'Неверный логин или пароль'})
@@ -113,3 +113,25 @@ def signout(request):
   logout(request)
   # Перенаправляем пользователя на страницу входа
   return redirect('signin')
+
+
+@login_required
+def main(request):
+  return render(request, 'store/main.html')
+
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')  # Перенаправление на страницу профиля после успешного сохранения
+    else:
+        form = CustomUserChangeForm(instance=request.user)
+    return render(request, 'store/edit_profile.html', {'form': form})
+
+@login_required
+def profile(request):
+    return render(request, 'store/profile.html')

@@ -5,7 +5,9 @@ from store import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-
+    path('main/', views.main, name='main'),
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('profile/', views.profile, name='profile'),
     path('category/<int:category_id>/', views.category, name='category'),
     path('product/<int:product_id>/', views.product, name='product'),
     path('category/<int:category_id>/<int:product_id>', views.product, name='categories'),

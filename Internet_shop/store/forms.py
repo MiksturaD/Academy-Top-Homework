@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import UserChangeForm
+
 from .models import Category, Product, Order, User
 
 
@@ -127,3 +129,10 @@ class SignupForm(forms.ModelForm):
     if password != confirm_password:
       raise forms.ValidationError('Пароли не совпадают!')
     return cleaned_data
+
+class CustomUserChangeForm(UserChangeForm):
+  class Meta:
+      model = User
+      fields = ['first_name', 'last_name', 'username', 'email']
+
+

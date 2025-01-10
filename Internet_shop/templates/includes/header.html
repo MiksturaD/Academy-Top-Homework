@@ -19,7 +19,7 @@
         </ul>
       </div>
         {% if user.is_authenticated %}
-            <span class="me-3">{{ user.last_name }} {{ user.first_name }}</span>
+            <a href="{% url 'profile' %}"><span class="me-3">{{ user.last_name }} {{ user.first_name }}</span></a>
             <a href="{% url 'signout' %}" class="btn btn-dark">Выйти</a>
         {% else %}
             <a href="{% url 'signin' %}" class="btn btn-dark">Войти</a>
