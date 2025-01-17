@@ -135,4 +135,33 @@ class CustomUserChangeForm(UserChangeForm):
       model = User
       fields = ['first_name', 'last_name', 'username', 'email']
 
+      widgets = {
+        'first_name': forms.TextInput(attrs={
+          'class': 'form-control',
+          'id': 'floatingTitle',
+          'placeholder': 'Имя',
+          'required': True
+        }),
+        'last_name': forms.TextInput(attrs={
+          'class': 'form-control',
+          'id': 'floatingLastname',
+          'aria-label': 'Фамилия',
+          'placeholder': 'Фамилия',
+          'required': True
+        }),
+        'username': forms.TextInput(attrs={
+          'class': 'form-control',
+          'id': 'floatingUsername',
+          'placeholder': 'Логин пользователя',
+          'aria-label': 'Логин пользователя',
+          'required': True
+        }),
+        'email': forms.EmailInput(attrs={
+          'class': 'form-control',
+          'id': 'floatingEmail',
+          'placeholder': 'Почта',
+          'required': True
+        }),
+      }
+
 

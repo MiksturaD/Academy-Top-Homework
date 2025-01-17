@@ -80,7 +80,7 @@ def handle_contact(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     if call.data == 'create_habit':
-        bot.send_message(call.message.chat.id, 'Напиши название привычки:')
+        bot.send_message(call.message.chat.id, 'Напиши название привычки:') #TODO найти команду которая остановит выполнение действия по кнопке query
         bot.register_next_step_handler(call.message, Habit_bot.create_habit_name)
     elif call.data == 'view_habits':
         Habit_bot.view_habits(call.message)
@@ -326,3 +326,5 @@ class Habit_bot:
 
 # Запускаем бота
 bot.polling(none_stop=True, interval=0)
+
+#TODO сделать бота на асихронном программировании
